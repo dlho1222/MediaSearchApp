@@ -53,6 +53,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.5")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
