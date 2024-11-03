@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MediaSearch</string>
+    <string name="Please_enter_your_search_term">검색어를 입력해주세요.</string>
 </resources>
