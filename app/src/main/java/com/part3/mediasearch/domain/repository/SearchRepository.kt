@@ -1,7 +1,10 @@
 package com.part3.mediasearch.domain.repository
 
-interface SearchRepository {
-    suspend fun searchVideos(query:String)
+import com.part3.mediasearch.domain.model.DocumentEntity
+import com.part3.mediasearch.domain.model.SearchEntity
 
-    suspend fun searchImages(query: String)
+interface SearchRepository {
+    suspend fun searchVideos(query: String): SearchEntity<DocumentEntity.VideoDocumentEntity>
+
+    suspend fun searchImages(query: String): SearchEntity<DocumentEntity.ImageDocumentEntity>
 }
