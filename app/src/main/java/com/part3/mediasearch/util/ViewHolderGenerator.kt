@@ -7,15 +7,17 @@ import com.part3.mediasearch.presentation.list.viewholder.BindingViewHolder
 import com.part3.mediasearch.presentation.list.viewholder.ImageViewHolder
 import com.part3.mediasearch.presentation.list.viewholder.UnknownViewHolder
 import com.part3.mediasearch.presentation.list.viewholder.VideoViewHolder
+import com.part3.mediasearch.presentation.model.SearchItem
 import com.part3.mediasearch.presentation.model.ViewType
 
 object ViewHolderGenerator {
     fun get(
         parent: ViewGroup,
         viewType: Int,
+        onClick: (SearchItem) -> Unit
     ): BindingViewHolder<*> = when (viewType) {
-        ViewType.VIDEO.ordinal -> VideoViewHolder(parent.toBinding())
-        ViewType.IMAGE.ordinal -> ImageViewHolder(parent.toBinding())
+        ViewType.VIDEO.ordinal -> VideoViewHolder(parent.toBinding(),onClick)
+        ViewType.IMAGE.ordinal -> ImageViewHolder(parent.toBinding(),onClick)
         else -> UnknownViewHolder(parent.toBinding())
     }
 

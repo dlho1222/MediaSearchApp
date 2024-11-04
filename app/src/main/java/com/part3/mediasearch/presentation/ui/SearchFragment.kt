@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.part3.mediasearch.SearchEvent
 import com.part3.mediasearch.SearchUiState
 import com.part3.mediasearch.SearchViewModel
 import com.part3.mediasearch.databinding.FragmentSearchBinding
@@ -20,8 +21,12 @@ import kotlinx.coroutines.launch
 class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
-    private val adapter by lazy { ListAdapter() }
-    private val viewModel by viewModels<SearchViewModel>()
+    private val adapter by lazy {
+        ListAdapter {
+            viewModel.onClickFavorite(it)
+        }
+    }
+    private val viewModel by activityViewModels<SearchViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,6 +43,17 @@ class SearchFragment : Fragment() {
             uiState.collectLatest { state ->
                 onBind(state)
             }
+        }
+        lifecycleScope.launch {
+            event.collectLatest { event ->
+                onEvent(event)
+            }
+        }
+    }
+
+    private fun onEvent(event: SearchEvent) {
+        when (event) {
+            is SearchEvent.OnClickFavorite -> viewModel.toggleFavorite(event.item)
         }
     }
 

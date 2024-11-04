@@ -10,8 +10,10 @@ import com.part3.mediasearch.presentation.model.ImageItem
 import com.part3.mediasearch.presentation.model.SearchItem
 import com.part3.mediasearch.presentation.model.VideoItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -27,6 +29,11 @@ class SearchViewModel @Inject constructor(
     private val searchFlow = MutableSharedFlow<String>()
     private val _uiState = MutableStateFlow(SearchUiState.init())
     val uiState = _uiState.asStateFlow()
+    private val _event = MutableSharedFlow<SearchEvent>(
+        extraBufferCapacity = 10,
+        onBufferOverflow = BufferOverflow.DROP_LATEST
+    )
+    val event = _event.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -45,7 +52,6 @@ class SearchViewModel @Inject constructor(
                 }
         }
     }
-
 
     fun search(query: String) {
         viewModelScope.launch {
@@ -95,6 +101,27 @@ class SearchViewModel @Inject constructor(
     private fun loadingState(isLoading: Boolean) {
         _uiState.update { prevState ->
             prevState.copy(isLoading = isLoading)
+        }
+    }
+
+    fun onClickFavorite(item: SearchItem) {
+        _event.tryEmit(SearchEvent.OnClickFavorite(item))
+    }
+
+    fun toggleFavorite(item: SearchItem) {
+        val newList = _uiState.value.list.map {
+            if (it == item) {
+                when (it) {
+                    is VideoItem -> it.copy(isFavorite = !it.isFavorite)
+                    is ImageItem -> it.copy(isFavorite = !it.isFavorite)
+                    else -> it
+                }
+            } else {
+                it
+            }
+        }
+        _uiState.update { prevState ->
+            prevState.copy(list = newList)
         }
     }
 }

@@ -7,9 +7,10 @@ import com.part3.mediasearch.presentation.model.SearchItem
 import com.part3.mediasearch.util.DiffCallBack
 import com.part3.mediasearch.util.ViewHolderGenerator
 
-class ListAdapter : ListAdapter<SearchItem, BindingViewHolder<*>>(DiffCallBack()) {
+class ListAdapter(private val onClick: (SearchItem) -> Unit) :
+    ListAdapter<SearchItem, BindingViewHolder<*>>(DiffCallBack()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindingViewHolder<*> {
-        return ViewHolderGenerator.get(parent, viewType)
+        return ViewHolderGenerator.get(parent, viewType, onClick)
     }
 
     override fun onBindViewHolder(holder: BindingViewHolder<*>, position: Int) {
